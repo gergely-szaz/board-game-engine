@@ -9,6 +9,7 @@ import org.eclipse.xtext.resource.XtextResource;
 import org.eclipse.xtext.resource.XtextResourceSet;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -36,16 +37,20 @@ public class ModelManager {
 	}
 
 	public Model LoadModel(String gameString) throws Exception {
-		//TODO refactor the resource path to make sense
-		Resource resource = resourceSet.createResource(URI.createURI("dummy:/" + numberOfGames++ + ".bgl"));
 		InputStream in = new ByteArrayInputStream(gameString.getBytes());
-		resource.load(in, resourceSet.getLoadOptions());
+		return LoadModel(in);
+	}
+	
+	public Model LoadModel(InputStream stream) throws Exception{
+		Resource resource = resourceSet.createResource(URI.createURI("dummy:/" + numberOfGames++ + ".bgl"));
+		resource.load(stream, resourceSet.getLoadOptions());
 		Model model = (Model) resource.getContents().get(0);
 		if (models.contains(model.getName()))
 			throw new Exception("Language with this name already loaded.");
 		models.put(model.getName(), model);
 		return model;
 	}
+	
 
 	public Model Get(String name) throws Exception {
 		Model m = models.get(name);
