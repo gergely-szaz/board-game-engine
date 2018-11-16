@@ -1,7 +1,7 @@
 package hu.gergelyszaz.bgs.manager;
 
 import hu.gergelyszaz.bgs.game.Game;
-import hu.gergelyszaz.bgs.view.Controller;
+import hu.gergelyszaz.bgs.view.View;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -15,7 +15,7 @@ public class GameManager implements Runnable {
 	private Object monitor = new Object();
 	public ModelManager modelManager;
 	public Hashtable<String, Game> availableGames = new Hashtable<>();
-	public Hashtable<String, Game> playerConnections = new Hashtable<>();
+	public Hashtable<View, Game> playerConnections = new Hashtable<>();
 	public List<Game> runningGames = new ArrayList<>();
 	private GameFactory gameFactory;
 
@@ -24,27 +24,31 @@ public class GameManager implements Runnable {
 		this.modelManager = modelManager;
 	}
 
-	public Controller JoinGame(String clientID, String gameName) throws Exception {
+	public void JoinGame(View view, String gameName) throws Exception {
 		synchronized (monitor) {
-			if (playerConnections.contains(clientID))
-				return playerConnections.get(clientID);
+
+			if (playerConnections.contains(view))
+				return;
+			
 			if (availableGames.get(gameName) == null) {
-				Model model=modelManager.Get(gameName);
-				if(model==null) throw new RuntimeException("Game "+ gameName + " not found!");
+				Model model = modelManager.Get(gameName);
+				if (model == null)
+					throw new RuntimeException("Game " + gameName + " not found!");
 				availableGames.put(gameName, gameFactory.CreateGame(model));
 			}
-			//TODO what happens if multiple clients try connect at the same time?
+
 			Game game = availableGames.get(gameName);
-			game.Join(clientID);
-			playerConnections.put(clientID, game);
+			
+			game.Join(view);
+			playerConnections.put(view, game);
+			
 			if (game.IsFull()) {
 				availableGames.remove(gameName);
 				game.Start();
 				runningGames.add(game);
-				
 			}
+			
 			Wake();
-			return game;
 		}
 	}
 
@@ -80,18 +84,18 @@ public class GameManager implements Runnable {
 			}
 		}
 	}
-	
+
 	public void Wake() {
 		synchronized (monitor) {
-			monitor.notify();	
+			monitor.notify();
 		}
-		
+
 	}
 
 	public void DisconnectPlayer(String id) {
 		Game game = playerConnections.remove(id);
 		game.Disconnect(id);
-		
+
 	}
 
 }

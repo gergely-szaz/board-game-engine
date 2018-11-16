@@ -42,10 +42,12 @@ public class GameImpl implements Controller, Game {
 	}
 
 	@Override
-	public boolean Join(String clientID) throws IllegalAccessException {
+	public boolean Join(View view) throws IllegalAccessException {
+		addView(view);
+		
 		for (Player player : internalManager.getPlayers()) {
 			if (!player.IsConnected()) {
-				player.setSessionID(clientID);
+				player.setSessionID(view.getId());
 				_saveCurrentState();
 				return true;
 			}
@@ -55,8 +57,8 @@ public class GameImpl implements Controller, Game {
 
 	@Override
 	public void Disconnect(String clientID) {
-		Player player =
-				internalManager.getPlayers().stream().filter(p -> p.getSessionID().equals(clientID)).findAny().get();
+		Player player = internalManager.getPlayers().stream().filter(p -> p.getSessionID().equals(clientID)).findAny()
+				.get();
 
 		internalManager.getLosers().add(player);
 
@@ -113,7 +115,8 @@ public class GameImpl implements Controller, Game {
 	}
 
 	@Override
-	public void AddView(View v) {
+	public void addView(View v) {
+		v.setController(this);
 		views.add(v);
 	}
 
@@ -189,6 +192,12 @@ public class GameImpl implements Controller, Game {
 	@Override
 	public boolean IsNotWaitingForInput() {
 		return internalManager.getSelectableManager().notWaitingForSelection();
+	}
+
+	@Override
+	public void removeView(View v) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
