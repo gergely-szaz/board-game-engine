@@ -2,11 +2,11 @@ package com.github.gergelyszaz.bgs.manager;
 
 import com.github.gergelyszaz.bgl.bgl.*;
 import com.github.gergelyszaz.bgl.bgl.Field;
-import com.github.gergelyszaz.bgs.action.*;
+import com.github.gergelyszaz.bgs.game.model.action.*;
 import com.github.gergelyszaz.bgs.game.*;
-import com.github.gergelyszaz.bgs.game.internal.Card;
-import com.github.gergelyszaz.bgs.game.internal.Deck;
-import com.github.gergelyszaz.bgs.game.internal.Player;
+import com.github.gergelyszaz.bgs.game.model.Card;
+import com.github.gergelyszaz.bgs.game.model.Deck;
+import com.github.gergelyszaz.bgs.game.model.Player;
 import com.github.gergelyszaz.bgs.state.IDManager;
 import com.github.gergelyszaz.bgs.state.util.StateStore;
 

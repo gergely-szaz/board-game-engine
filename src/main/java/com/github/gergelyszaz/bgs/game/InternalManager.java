@@ -1,7 +1,7 @@
 package com.github.gergelyszaz.bgs.game;
 
 import com.google.common.collect.Lists;
-import com.github.gergelyszaz.bgs.game.internal.*;
+import com.github.gergelyszaz.bgs.game.model.*;
 import com.github.gergelyszaz.bgs.state.IDManager;
 import com.github.gergelyszaz.bgl.bgl.Field;
 

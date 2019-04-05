@@ -30,7 +30,7 @@ public class GameFactoryTest {
 		GameImpl game = gameFactory.CreateGame(model);
 		VariableManager variableManager = game.getVariableManager();
 
-		Map variables = variableManager.listVariables(null);
+		Map<String, Object> variables = variableManager.listVariables(null);
 		assertEquals(2, variables.size());
 		assertTrue(variableManager.listVariables(null)
 				.containsKey("currentPlayer"));
@@ -44,7 +44,7 @@ public class GameFactoryTest {
 		GameImpl game = gameFactory.CreateGame(model);
 		VariableManager variableManager = game.getVariableManager();
 
-		Map variables = variableManager.listVariables(null);
+		Map<String, Object> variables = variableManager.listVariables(null);
 		assertEquals(2, variables.size());
 		assertEquals(5,
 				variableManager.getReference(variableManager.getReference(null,
@@ -62,7 +62,6 @@ public class GameFactoryTest {
 		GameImpl game = gameFactory.CreateGame(model);
 		VariableManager variableManager = game.getVariableManager();
 
-		Map variables = variableManager.listVariables(null);
 		assertEquals(6,
 				variableManager.getReference(variableManager.getReference(null,
 						"currentPlayer"), "a"));

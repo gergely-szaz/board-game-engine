@@ -3,11 +3,11 @@ package com.github.gergelyszaz.bgs.game;
 import com.google.common.collect.Lists;
 import com.github.gergelyszaz.bgl.bgl.Field;
 import com.github.gergelyszaz.bgl.bgl.*;
-import com.github.gergelyszaz.bgs.action.ActionManager;
-import com.github.gergelyszaz.bgs.action.impl.SelectAction;
-import com.github.gergelyszaz.bgs.game.internal.Deck;
-import com.github.gergelyszaz.bgs.game.internal.Player;
-import com.github.gergelyszaz.bgs.game.internal.Token;
+import com.github.gergelyszaz.bgs.game.model.action.ActionManager;
+import com.github.gergelyszaz.bgs.game.model.action.impl.SelectAction;
+import com.github.gergelyszaz.bgs.game.model.Deck;
+import com.github.gergelyszaz.bgs.game.model.Player;
+import com.github.gergelyszaz.bgs.game.model.Token;
 import com.github.gergelyszaz.bgs.state.*;
 import com.github.gergelyszaz.bgs.state.util.StateStore;
 import com.github.gergelyszaz.bgs.view.*;
@@ -61,8 +61,6 @@ public class GameImpl implements Controller, Game {
 				.get();
 
 		internalManager.getLosers().add(player);
-
-		// TODO check other usages
 	}
 
 	@Override
@@ -168,8 +166,6 @@ public class GameImpl implements Controller, Game {
 	}
 
 	private void _setupDistance(Field startingField, int distance) throws IllegalAccessException {
-
-		// TODO write without recursion and use BFS instead of DFS
 		int dist = variableManager.getValue(startingField, VariableManager.GLOBAL.DISTANCE_FROM_SELECTED_TOKEN);
 		if ((dist > -1 && dist <= distance))
 			return;
@@ -195,9 +191,6 @@ public class GameImpl implements Controller, Game {
 	}
 
 	@Override
-	public void removeView(View v) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void removeView(View v) {}
 
 }

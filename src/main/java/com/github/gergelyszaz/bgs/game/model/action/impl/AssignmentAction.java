@@ -1,7 +1,7 @@
-package com.github.gergelyszaz.bgs.action.impl;
+package com.github.gergelyszaz.bgs.game.model.action.impl;
 
 import com.github.gergelyszaz.bgl.bgl.*;
-import com.github.gergelyszaz.bgs.action.AbstractAction;
+import com.github.gergelyszaz.bgs.game.model.action.AbstractAction;
 import com.github.gergelyszaz.bgs.game.*;
 
 import java.util.List;

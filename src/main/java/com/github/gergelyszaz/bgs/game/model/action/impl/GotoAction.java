@@ -1,7 +1,7 @@
-package com.github.gergelyszaz.bgs.action.impl;
+package com.github.gergelyszaz.bgs.game.model.action.impl;
 
-import com.github.gergelyszaz.bgs.action.Action;
-import com.github.gergelyszaz.bgs.action.ActionManager;
+import com.github.gergelyszaz.bgs.game.model.action.Action;
+import com.github.gergelyszaz.bgs.game.model.action.ActionManager;
 
 /**
  * Created by mad on 2016. 10. 24..

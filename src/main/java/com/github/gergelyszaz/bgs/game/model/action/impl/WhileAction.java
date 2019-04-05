@@ -1,7 +1,7 @@
-package com.github.gergelyszaz.bgs.action.impl;
+package com.github.gergelyszaz.bgs.game.model.action.impl;
 
 import com.github.gergelyszaz.bgl.bgl.Action;
-import com.github.gergelyszaz.bgs.action.ActionManager;
+import com.github.gergelyszaz.bgs.game.model.action.ActionManager;
 import com.github.gergelyszaz.bgs.game.VariableManager;
 
 /**

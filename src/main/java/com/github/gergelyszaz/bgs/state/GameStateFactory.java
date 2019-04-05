@@ -1,12 +1,16 @@
 package com.github.gergelyszaz.bgs.state;
 
-import com.google.common.collect.Lists;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import com.github.gergelyszaz.bgl.bgl.Field;
 import com.github.gergelyszaz.bgs.game.InternalManager;
-import com.github.gergelyszaz.bgs.game.internal.*;
-
-import java.util.*;
-import java.util.stream.Collectors;
+import com.github.gergelyszaz.bgs.game.model.Card;
+import com.github.gergelyszaz.bgs.game.model.Deck;
+import com.github.gergelyszaz.bgs.game.model.Player;
+import com.github.gergelyszaz.bgs.game.model.Token;
+import com.google.common.collect.Lists;
 
 /**
  * Created by mad on 2016. 10. 18..

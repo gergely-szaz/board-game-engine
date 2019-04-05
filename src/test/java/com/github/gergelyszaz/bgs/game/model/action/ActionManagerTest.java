@@ -1,4 +1,4 @@
-package com.github.gergelyszaz.bgs.action;
+package com.github.gergelyszaz.bgs.game.model.action;
 
 import org.junit.Before;
 import org.junit.Test;
