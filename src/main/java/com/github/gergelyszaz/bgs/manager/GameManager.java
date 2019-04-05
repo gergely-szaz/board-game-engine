@@ -3,6 +3,8 @@ package com.github.gergelyszaz.bgs.manager;
 import com.github.gergelyszaz.bgs.game.Game;
 import com.github.gergelyszaz.bgs.view.View;
 
+import com.github.gergelyszaz.bgl.manager.ModelManager;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Hashtable;
