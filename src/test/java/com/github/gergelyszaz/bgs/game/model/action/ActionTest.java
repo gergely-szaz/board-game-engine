@@ -1,5 +1,7 @@
 package com.github.gergelyszaz.bgs.game.model.action;
 
+import com.github.gergelyszaz.bgl.manager.ModelManager;
+
 import com.github.gergelyszaz.bgs.game.*;
 import com.github.gergelyszaz.bgs.manager.*;
 import com.github.gergelyszaz.bgs.util.FileUtil;
