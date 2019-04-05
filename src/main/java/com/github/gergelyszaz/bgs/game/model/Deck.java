@@ -1,4 +1,4 @@
-package com.github.gergelyszaz.bgs.game.internal;
+package com.github.gergelyszaz.bgs.game.model;
 
 import com.github.gergelyszaz.bgs.game.VariableManager;
 

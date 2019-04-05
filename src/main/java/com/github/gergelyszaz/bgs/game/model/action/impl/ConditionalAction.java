@@ -1,14 +1,14 @@
-package com.github.gergelyszaz.bgs.action.impl;
+package com.github.gergelyszaz.bgs.game.model.action.impl;
 
 import com.github.gergelyszaz.bgl.bgl.Action;
-import com.github.gergelyszaz.bgs.action.*;
+import com.github.gergelyszaz.bgs.game.model.action.*;
 import com.github.gergelyszaz.bgs.game.*;
 
 /**
  * Created by mad on 2016. 10. 24..
  */
 public abstract class ConditionalAction extends AbstractAction {
-    protected com.github.gergelyszaz.bgs.action.Action skipAction;
+    protected com.github.gergelyszaz.bgs.game.model.action.Action skipAction;
     protected ActionManager actionManager;
     protected ArithmeticManager arithmeticManager ;
 
@@ -20,7 +20,7 @@ public abstract class ConditionalAction extends AbstractAction {
         this.arithmeticManager = new ArithmeticManager(variableManager);
     }
 
-    public void setSkipAction(com.github.gergelyszaz.bgs.action.Action action) {
+    public void setSkipAction(com.github.gergelyszaz.bgs.game.model.action.Action action) {
         this.skipAction = action;
     }
 

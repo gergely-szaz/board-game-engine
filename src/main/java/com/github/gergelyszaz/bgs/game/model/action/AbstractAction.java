@@ -1,11 +1,11 @@
-package com.github.gergelyszaz.bgs.action;
+package com.github.gergelyszaz.bgs.game.model.action;
 
 import com.github.gergelyszaz.bgs.game.VariableManager;
 
 /**
  * Created by mad on 2016. 10. 12..
  */
-public abstract class AbstractAction implements com.github.gergelyszaz.bgs.action.Action {
+public abstract class AbstractAction implements com.github.gergelyszaz.bgs.game.model.action.Action {
 
     protected final VariableManager variableManager;
     protected com.github.gergelyszaz.bgl.bgl.Action action;

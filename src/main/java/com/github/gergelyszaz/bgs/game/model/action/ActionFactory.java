@@ -1,13 +1,27 @@
-package com.github.gergelyszaz.bgs.action;
-
-import com.github.gergelyszaz.bgs.action.impl.*;
-import com.github.gergelyszaz.bgs.game.InternalManager;
-import com.github.gergelyszaz.bgs.game.VariableManager;
-import com.github.gergelyszaz.bgs.state.IDManager;
+package com.github.gergelyszaz.bgs.game.model.action;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+import com.github.gergelyszaz.bgs.game.InternalManager;
+import com.github.gergelyszaz.bgs.game.VariableManager;
+import com.github.gergelyszaz.bgs.game.model.action.impl.AssignmentAction;
+import com.github.gergelyszaz.bgs.game.model.action.impl.ConditionalAction;
+import com.github.gergelyszaz.bgs.game.model.action.impl.DestroyAction;
+import com.github.gergelyszaz.bgs.game.model.action.impl.EndTurnAction;
+import com.github.gergelyszaz.bgs.game.model.action.impl.GotoAction;
+import com.github.gergelyszaz.bgs.game.model.action.impl.IfAction;
+import com.github.gergelyszaz.bgs.game.model.action.impl.LoseAction;
+import com.github.gergelyszaz.bgs.game.model.action.impl.MoveAction;
+import com.github.gergelyszaz.bgs.game.model.action.impl.NopAction;
+import com.github.gergelyszaz.bgs.game.model.action.impl.RollAction;
+import com.github.gergelyszaz.bgs.game.model.action.impl.SelectAction;
+import com.github.gergelyszaz.bgs.game.model.action.impl.ShuffleAction;
+import com.github.gergelyszaz.bgs.game.model.action.impl.SpawnAction;
+import com.github.gergelyszaz.bgs.game.model.action.impl.WhileAction;
+import com.github.gergelyszaz.bgs.game.model.action.impl.WinAction;
+import com.github.gergelyszaz.bgs.state.IDManager;
 
 /**
  * Created by gergely.szaz on 2016. 10. 16..
@@ -28,16 +42,13 @@ public class ActionFactory {
 	public static final String ASSIGNMENT = "ASSIGNMENT";
 
 	private final VariableManager variableManager;
-	private final IDManager idManager;
 	private final ActionManager actionManager;
 	private final InternalManager internalManager;
 
-	public ActionFactory(VariableManager variableManager, IDManager idManager,
-								ActionManager actionManager,
-								InternalManager internalManager) {
+	public ActionFactory(VariableManager variableManager, IDManager idManager, ActionManager actionManager,
+			InternalManager internalManager) {
 
 		this.variableManager = variableManager;
-		this.idManager = idManager;
 		this.actionManager = actionManager;
 		this.internalManager = internalManager;
 	}

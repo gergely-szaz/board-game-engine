@@ -1,4 +1,4 @@
-package com.github.gergelyszaz.bgs.action;
+package com.github.gergelyszaz.bgs.game.model.action;
 
 import com.github.gergelyszaz.bgs.game.*;
 import com.github.gergelyszaz.bgs.manager.*;
@@ -171,7 +171,6 @@ public class ActionTest {
 		}
 
 		Object token1 = variableManager.getReference(null, "token1");
-		Object token2 = variableManager.getReference(null, "token2");
 		Object token3 = variableManager.getReference(null, "token3");
 		Object field = variableManager.getReference(null, "field");
 

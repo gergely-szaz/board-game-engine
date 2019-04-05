@@ -1,22 +1,36 @@
-package com.github.gergelyszaz.bgs.action;
-
-import com.github.gergelyszaz.bgs.action.impl.*;
-import com.github.gergelyszaz.bgs.game.InternalManager;
-import com.github.gergelyszaz.bgs.game.VariableManager;
-import com.github.gergelyszaz.bgs.state.IDManager;
-import com.github.gergelyszaz.bgl.bgl.AttributeName;
-import com.github.gergelyszaz.bgl.bgl.NestedAction;
-import com.github.gergelyszaz.bgl.bgl.Token;
-import org.eclipse.emf.common.util.BasicEList;
-import org.junit.Before;
-import org.junit.Test;
-
-import java.util.Arrays;
-import java.util.List;
+package com.github.gergelyszaz.bgs.game.model.action;
 
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+
+import java.util.Arrays;
+import java.util.List;
+
+import com.github.gergelyszaz.bgl.bgl.AttributeName;
+import com.github.gergelyszaz.bgl.bgl.NestedAction;
+import com.github.gergelyszaz.bgl.bgl.Token;
+import com.github.gergelyszaz.bgs.game.InternalManager;
+import com.github.gergelyszaz.bgs.game.VariableManager;
+import com.github.gergelyszaz.bgs.game.model.action.impl.AssignmentAction;
+import com.github.gergelyszaz.bgs.game.model.action.impl.DestroyAction;
+import com.github.gergelyszaz.bgs.game.model.action.impl.EndTurnAction;
+import com.github.gergelyszaz.bgs.game.model.action.impl.GotoAction;
+import com.github.gergelyszaz.bgs.game.model.action.impl.IfAction;
+import com.github.gergelyszaz.bgs.game.model.action.impl.LoseAction;
+import com.github.gergelyszaz.bgs.game.model.action.impl.MoveAction;
+import com.github.gergelyszaz.bgs.game.model.action.impl.NopAction;
+import com.github.gergelyszaz.bgs.game.model.action.impl.RollAction;
+import com.github.gergelyszaz.bgs.game.model.action.impl.SelectAction;
+import com.github.gergelyszaz.bgs.game.model.action.impl.ShuffleAction;
+import com.github.gergelyszaz.bgs.game.model.action.impl.SpawnAction;
+import com.github.gergelyszaz.bgs.game.model.action.impl.WhileAction;
+import com.github.gergelyszaz.bgs.game.model.action.impl.WinAction;
+import com.github.gergelyszaz.bgs.state.IDManager;
+
+import org.eclipse.emf.common.util.BasicEList;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Created by mad on 2016. 10. 25..
@@ -42,7 +56,7 @@ public class ActionFactoryTest {
 		when(assingmentAction.getName()).thenReturn(null);
 
 		NestedAction nestedAction=mock(NestedAction.class);
-		when(nestedAction.getActions()).thenReturn(new BasicEList(Arrays.asList
+		when(nestedAction.getActions()).thenReturn(new BasicEList<>(Arrays.asList
 			 (assingmentAction)));
 
 		destroyAction = mock(com.github.gergelyszaz.bgl.bgl.Action.class);

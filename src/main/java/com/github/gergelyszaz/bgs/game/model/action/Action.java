@@ -1,4 +1,4 @@
-package com.github.gergelyszaz.bgs.action;
+package com.github.gergelyszaz.bgs.game.model.action;
 
 /**
  * Created by mad on 2016. 10. 12..
