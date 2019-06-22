@@ -7,7 +7,7 @@ workflow "build" {
 }
 
 action "mvn clean install" {
-  uses = "LucaFeger/action-maven-cli@9d8f23af091bd6f5f0c05c942630939b6e53ce44"
+  uses = "gergelyszaz/action-maven-cli@master"
   args = "clean install"
 }
 
@@ -19,7 +19,7 @@ action "master only" {
 
 action "deploy snapshot" {
   uses = "gergelyszaz/action-maven-cli@master"
-  args = "clean install deploy"
+  args = "deploy"
   needs = ["master only"]
   secrets = [
     "OSSRH_PASSWORD",
