@@ -7,8 +7,9 @@ import com.github.gergelyszaz.bgl.manager.ModelManager;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.github.gergelyszaz.bgl.bgl.*;
@@ -16,8 +17,8 @@ import com.github.gergelyszaz.bgl.bgl.*;
 public class GameManager implements Runnable {
 	private Object monitor = new Object();
 	public ModelManager modelManager;
-	public Hashtable<String, Game> availableGames = new Hashtable<>();
-	public Hashtable<View, Game> playerConnections = new Hashtable<>();
+	public Map<String, Game> availableGames = new HashMap<>();
+	public Map<View, Game> playerConnections = new HashMap<>();
 	public List<Game> runningGames = new ArrayList<>();
 	private GameFactory gameFactory;
 
@@ -29,9 +30,9 @@ public class GameManager implements Runnable {
 	public void JoinGame(View view, String gameName) throws Exception {
 		synchronized (monitor) {
 
-			if (playerConnections.contains(view))
+			if (playerConnections.containsKey(view))
 				return;
-			
+
 			if (availableGames.get(gameName) == null) {
 				Model model = modelManager.Get(gameName);
 				if (model == null)
@@ -40,16 +41,16 @@ public class GameManager implements Runnable {
 			}
 
 			Game game = availableGames.get(gameName);
-			
+
 			game.Join(view);
 			playerConnections.put(view, game);
-			
+
 			if (game.IsFull()) {
 				availableGames.remove(gameName);
 				game.Start();
 				runningGames.add(game);
 			}
-			
+
 			Wake();
 		}
 	}
@@ -91,13 +92,5 @@ public class GameManager implements Runnable {
 		synchronized (monitor) {
 			monitor.notify();
 		}
-
 	}
-
-	public void DisconnectPlayer(String id) {
-		Game game = playerConnections.remove(id);
-		game.Disconnect(id);
-
-	}
-
 }

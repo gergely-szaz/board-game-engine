@@ -9,22 +9,15 @@ import com.github.gergelyszaz.bgs.game.model.Player;
  */
 public class WinAction extends AbstractAction {
 
-	private final InternalManager internalManager;
-
-	public WinAction(VariableManager variableManager,
-						  InternalManager internalManager) {
-
-		super(variableManager, null);
-		this.internalManager=internalManager;
-	}
+	public WinAction() {
+		super(null);
+	}	
 
 	@Override
-	public void Execute() throws IllegalAccessException {
+	public void execute(GameContext context) throws IllegalAccessException {
 
-		Player player =
-			 (Player) variableManager.getReference(null, VariableManager
-				  .GLOBAL.CURRENTPLAYER);
-		internalManager.addWinner(player);
+		Player player = (Player) context.getVariableManager().getReference(null, VariableManager.GLOBAL.CURRENTPLAYER);
+		context.getInternalManager().addWinner(player);
 	}
 
 }

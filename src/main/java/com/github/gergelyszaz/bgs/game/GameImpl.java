@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.github.gergelyszaz.bgl.bgl.Field;
 import com.github.gergelyszaz.bgl.bgl.*;
 import com.github.gergelyszaz.bgs.game.model.action.ActionManager;
+import com.github.gergelyszaz.bgs.game.model.action.ConcreteAction;
 import com.github.gergelyszaz.bgs.game.model.action.impl.SelectAction;
 import com.github.gergelyszaz.bgs.game.model.Deck;
 import com.github.gergelyszaz.bgs.game.model.Player;
@@ -22,14 +23,16 @@ public class GameImpl implements Controller, Game {
 	private StateStore stateStore;
 	private InternalManager internalManager;
 	private Set<View> views = new HashSet<>();
+	private GameContext context;
 
-	public GameImpl(VariableManager variableManager, ActionManager actionManager, IDManager idManager,
-			StateStore stateStore, InternalManager internalManager) {
-		this.internalManager = internalManager;
-		this.variableManager = variableManager;
-		this.actionManager = actionManager;
+	public GameImpl(IDManager idManager, StateStore stateStore, GameContext context) {
+		this.internalManager = context.getInternalManager();
+		this.variableManager = context.getVariableManager();
+		this.actionManager = context.getActionManager();
 		this.idManager = idManager;
 		this.stateStore = stateStore;
+
+		this.context = context;
 
 	}
 
@@ -44,7 +47,7 @@ public class GameImpl implements Controller, Game {
 	@Override
 	public boolean Join(View view) throws IllegalAccessException {
 		addView(view);
-		
+
 		for (Player player : internalManager.getPlayers()) {
 			if (!player.IsConnected()) {
 				player.setSessionID(view.getId());
@@ -90,7 +93,8 @@ public class GameImpl implements Controller, Game {
 			return;
 		}
 		actionManager.step();
-		actionManager.getCurrentAction().Execute();
+		ConcreteAction currentAction = actionManager.getCurrentAction();
+		currentAction.execute(context);
 		_saveCurrentState();
 		views.forEach(View::Refresh);
 	}
@@ -191,6 +195,7 @@ public class GameImpl implements Controller, Game {
 	}
 
 	@Override
-	public void removeView(View v) {}
+	public void removeView(View v) {
+	}
 
 }
