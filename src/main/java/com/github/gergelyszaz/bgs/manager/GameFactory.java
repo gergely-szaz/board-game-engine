@@ -17,7 +17,6 @@ import java.util.*;
 public class GameFactory {
 
 	private BGLUtil bglUtil = new BGLUtil();
-	private GameContext context;
 
 	public GameImpl CreateGame(Model model) throws IllegalAccessException {
 
@@ -40,13 +39,16 @@ public class GameFactory {
 
 		_setupPlayerDecks(model, variableManager, players, decks);
 		_setupGlobalVariables(model, variableManager);
-		_setupPlayersStartRules(model, variableManager, players, actionManager, internalManager, idManager);
+		
 
 		fields.forEach(selectableManager::add);
 		decks.forEach(deck -> deck.cards.forEach(selectableManager::add));
 		players.forEach(selectableManager::add);
 
-		context = new GameContext(variableManager);
+		GameContext context = new GameContext(variableManager, actionManager, internalManager, selectableManager);
+		
+		_setupPlayersStartRules(model, players, idManager, context);
+
 		GameImpl game = new GameImpl(idManager, stateStore, context);
 		game.Init(model, players, decks);
 		return game;
@@ -144,8 +146,8 @@ public class GameFactory {
 		model.getFields().forEach(f -> variableManager.store(null, f.getName(), f));
 	}
 
-	private void _setupPlayersStartRules(Model model, VariableManager variableManager, List<Player> players,
-			ActionManager actionManager, InternalManager internalManager, IDManager idManager)
+	private void _setupPlayersStartRules(Model model, List<Player> players,
+			IDManager idManager, GameContext context)
 			throws IllegalAccessException {
 
 		for (PlayerSetup setup : model.getPlayer().getPlayerSetups()) {
@@ -154,17 +156,16 @@ public class GameFactory {
 				throw new IllegalAccessException("Invalid player id: " + setupId);
 			}
 			Player player = players.get(setupId - 1);
-			_setupPlayerStartRules(variableManager, player, setup, idManager, actionManager, internalManager);
+			_setupPlayerStartRules(context, player, setup, idManager);
 
 		}
 	}
 
-	private void _setupPlayerStartRules(VariableManager variableManager, Player player, PlayerSetup setup,
-			IDManager idManager, ActionManager actionManager, InternalManager internalManager)
+	private void _setupPlayerStartRules(GameContext context, Player player, PlayerSetup setup, IDManager idManager)
 			throws IllegalAccessException {
 
-		variableManager.store(null, VariableManager.GLOBAL.CURRENTPLAYER, player);
-		variableManager.store(null, VariableManager.GLOBAL.THIS, player);
+		context.getVariableManager().store(null, VariableManager.GLOBAL.CURRENTPLAYER, player);
+		context.getVariableManager().store(null, VariableManager.GLOBAL.THIS, player);
 
 		ActionManager startActionManager = new ActionManager();
 		ActionFactory actionFactory = new ActionFactory();
@@ -174,7 +175,7 @@ public class GameFactory {
 			startActionManager.getCurrentAction().execute(context);
 		}
 
-		variableManager.store(null, VariableManager.GLOBAL.THIS, null);
+		context.getVariableManager().store(null, VariableManager.GLOBAL.THIS, null);
 	}
 
 }
