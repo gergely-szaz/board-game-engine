@@ -7,6 +7,7 @@ import com.github.gergelyszaz.bgs.game.model.Deck;
 import com.github.gergelyszaz.bgs.game.model.Token;
 import com.github.gergelyszaz.bgl.bgl.*;
 
+
 import java.util.Objects;
 
 /**
@@ -16,21 +17,18 @@ public class MoveAction extends AbstractAction {
 
     BGLUtil bglUtil = new BGLUtil();
 
-    public MoveAction(VariableManager variableManager, com.github.gergelyszaz.bgl.bgl.Action action) {
-        super(variableManager,action);
+    public MoveAction(Action action) {
+        super(action);
     }
 
     @Override
-    public void Execute() throws IllegalAccessException {
+    public void execute(GameContext context) throws IllegalAccessException {
         if (Objects.equals(action.getType(), "CARD")) {
-            ((Card) variableManager.getReference(bglUtil.toString(action.getSelected())))
-                    .MoveTo((Deck) variableManager.getReference(bglUtil.toString(action
-                          .getMoveTo())));
-        }
-        else {
-            ((Token) variableManager.getReference(bglUtil.toString(action.getSelected())))
-                  .setField((Field) variableManager.getReference(bglUtil.toString(
-                        action.getMoveTo())));
+            ((Card) context.getVariableManager().getReference(bglUtil.toString(action.getSelected())))
+                    .MoveTo((Deck) context.getVariableManager().getReference(bglUtil.toString(action.getMoveTo())));
+        } else {
+            ((Token) context.getVariableManager().getReference(bglUtil.toString(action.getSelected())))
+                    .setField((Field) context.getVariableManager().getReference(bglUtil.toString(action.getMoveTo())));
         }
     }
 }

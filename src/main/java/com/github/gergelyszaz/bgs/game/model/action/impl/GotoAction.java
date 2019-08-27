@@ -1,23 +1,21 @@
 package com.github.gergelyszaz.bgs.game.model.action.impl;
 
-import com.github.gergelyszaz.bgs.game.model.action.Action;
-import com.github.gergelyszaz.bgs.game.model.action.ActionManager;
+import com.github.gergelyszaz.bgs.game.GameContext;
+import com.github.gergelyszaz.bgs.game.model.action.ConcreteAction;
 
 /**
  * Created by mad on 2016. 10. 24..
  */
-public class GotoAction implements Action {
+public class GotoAction implements ConcreteAction {
 
-	private final ActionManager actionManager;
-	private final Action toAction;
+	private final ConcreteAction toAction;
 
-	public GotoAction(Action toAction, ActionManager actionManager){
+	public GotoAction(ConcreteAction toAction){
 		this.toAction=toAction;
-		this.actionManager=actionManager;
 	}
 	@Override
-	public void Execute() throws IllegalAccessException {
-		actionManager.setNextAction(toAction);
+	public void execute(GameContext context) throws IllegalAccessException {
+		context.getActionManager().setNextAction(toAction);
 	}
 
 	@Override

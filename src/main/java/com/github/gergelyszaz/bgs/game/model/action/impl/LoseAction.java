@@ -9,21 +9,16 @@ import com.github.gergelyszaz.bgs.game.model.Player;
  */
 public class LoseAction extends AbstractAction {
 
-	private final InternalManager internalManager;
+	public LoseAction() {
 
-	public LoseAction(VariableManager variableManager,
-							InternalManager internalManager) {
-
-		super(variableManager, null);
-		this.internalManager = internalManager;
+		super(null);
 	}
 
 	@Override
-	public void Execute() throws IllegalAccessException {
+	public void execute(GameContext context) throws IllegalAccessException {
 
-		Player player = (Player) variableManager.getReference(null,
-				VariableManager.GLOBAL.CURRENTPLAYER);
-		internalManager.addLoser(player);
+		Player player = (Player) context.getVariableManager().getReference(null, VariableManager.GLOBAL.CURRENTPLAYER);
+		context.getInternalManager().addLoser(player);
 	}
 
 }

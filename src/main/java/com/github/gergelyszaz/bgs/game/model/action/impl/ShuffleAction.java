@@ -11,16 +11,16 @@ import com.github.gergelyszaz.bgl.bgl.Action;
 public class ShuffleAction extends AbstractAction {
 	BGLUtil bglUtil = new BGLUtil();
 
-	public ShuffleAction(VariableManager variableManager, Action action) {
+	public ShuffleAction(Action action) {
 
-		super(variableManager, action);
+		super(action);
 	}
 
 	@Override
-	public void Execute() throws IllegalAccessException {
+	public void execute(GameContext context) throws IllegalAccessException {
 
 		Object object =
-				variableManager.getReference(bglUtil.toString(action.getSelected()));
+				context.getVariableManager().getReference(bglUtil.toString(action.getSelected()));
 		if (!(object instanceof Deck)) {
 			throw new IllegalAccessException(object + " is not a DECK");
 		}

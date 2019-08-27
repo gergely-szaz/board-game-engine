@@ -9,27 +9,18 @@ import com.github.gergelyszaz.bgs.game.model.Player;
  */
 public class EndTurnAction extends AbstractAction {
 
-	private final ActionManager actionManager;
-	private final InternalManager internalManager;
-
-	public EndTurnAction(VariableManager variableManager,
-								ActionManager actionManager,
-								InternalManager internalManager) {
-
-		super(variableManager, null);
-		this.actionManager = actionManager;
-		this.internalManager = internalManager;
+	public EndTurnAction() {
+		super(null);
 	}
 
 	@Override
-	public void Execute() throws IllegalAccessException {
+	public void execute(GameContext context) throws IllegalAccessException {
 
-		actionManager.reset();
-		Player player = (Player) variableManager.getReference(null,
-				VariableManager.GLOBAL.CURRENTPLAYER);
-		Player nextPlayer = internalManager.getNextPlayer(player);
-		internalManager.setCurrentPlayer(nextPlayer,variableManager);
-		actionManager.reset();
+		context.getActionManager().reset();
+		Player player = (Player) context.getVariableManager().getReference(null, VariableManager.GLOBAL.CURRENTPLAYER);
+		Player nextPlayer = context.getInternalManager().getNextPlayer(player);
+		context.getInternalManager().setCurrentPlayer(nextPlayer, context.getVariableManager());
+		context.getActionManager().reset();
 	}
 
 

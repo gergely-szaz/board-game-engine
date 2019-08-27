@@ -8,26 +8,22 @@ import com.github.gergelyszaz.bgs.game.*;
  * Created by mad on 2016. 10. 24..
  */
 public abstract class ConditionalAction extends AbstractAction {
-    protected com.github.gergelyszaz.bgs.game.model.action.Action skipAction;
-    protected ActionManager actionManager;
-    protected ArithmeticManager arithmeticManager ;
+    protected com.github.gergelyszaz.bgs.game.model.action.ConcreteAction skipAction;
 
-    public ConditionalAction(VariableManager variableManager,
-                             Action action, ActionManager actionManager) {
+    public ConditionalAction(Action action) {
 
-        super(variableManager, action);
-        this.actionManager = actionManager;
-        this.arithmeticManager = new ArithmeticManager(variableManager);
+        super(action);
     }
 
-    public void setSkipAction(com.github.gergelyszaz.bgs.game.model.action.Action action) {
+    public void setSkipAction(com.github.gergelyszaz.bgs.game.model.action.ConcreteAction action) {
         this.skipAction = action;
     }
 
     @Override
-    public void Execute() throws IllegalAccessException {
+    public void execute(GameContext context) throws IllegalAccessException {
+        ArithmeticManager arithmeticManager = new ArithmeticManager(context.getVariableManager());
         if (!arithmeticManager.evaluate(action.getCondition())) {
-            actionManager.setNextAction(skipAction);
+            context.getActionManager().setNextAction(skipAction);
         }
 
     }

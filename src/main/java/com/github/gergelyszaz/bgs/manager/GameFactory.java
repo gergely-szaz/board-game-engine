@@ -2,7 +2,9 @@ package com.github.gergelyszaz.bgs.manager;
 
 import com.github.gergelyszaz.bgl.bgl.*;
 import com.github.gergelyszaz.bgl.bgl.Field;
+
 import com.github.gergelyszaz.bgs.game.model.action.*;
+import com.github.gergelyszaz.bgs.game.model.action.ConcreteAction;
 import com.github.gergelyszaz.bgs.game.*;
 import com.github.gergelyszaz.bgs.game.model.Card;
 import com.github.gergelyszaz.bgs.game.model.Deck;
@@ -25,12 +27,11 @@ public class GameFactory {
 		SelectableManager selectableManager = new SelectableManager();
 		InternalManager internalManager = new InternalManager(selectableManager);
 
-		ActionFactory actionFactory = new ActionFactory(variableManager,
-				idManager,
-				actionManager,
-				internalManager);
-		actionManager.setActions(actionFactory.createActionSequence(model.getRule()
-				.getActions()));
+		ActionFactory actionFactory = new ActionFactory();
+
+		List<Action> actions = model.getRule().getActions();
+		List<ConcreteAction> createActionSequence = actionFactory.createActionSequence(actions);
+		actionManager.setActions(createActionSequence);
 
 		List<Player> players = _setupPlayers(model, variableManager);
 		List<Deck> decks = _setupDecks(model, variableManager);
@@ -38,44 +39,34 @@ public class GameFactory {
 
 		_setupPlayerDecks(model, variableManager, players, decks);
 		_setupGlobalVariables(model, variableManager);
-		_setupPlayersStartRules(model,
-				variableManager,
-				players,
-				actionManager,
-				internalManager,
-				idManager);
+		
 
 		fields.forEach(selectableManager::add);
 		decks.forEach(deck -> deck.cards.forEach(selectableManager::add));
 		players.forEach(selectableManager::add);
 
-		GameImpl game = new GameImpl(variableManager,
-				actionManager,
-				idManager,
-				stateStore,
-				internalManager);
+		GameContext context = new GameContext(variableManager, actionManager, internalManager, selectableManager);
+		
+		_setupPlayersStartRules(model, players, idManager, context);
+
+		GameImpl game = new GameImpl(idManager, stateStore, context);
 		game.Init(model, players, decks);
 		return game;
 	}
 
-	private List<Player> _setupPlayers(Model model,
-												  VariableManager variableManager)
-			throws IllegalAccessException {
+	private List<Player> _setupPlayers(Model model, VariableManager variableManager) throws IllegalAccessException {
 
 		List<Player> players = new ArrayList<>();
 		for (int id = 0; id < model.getPlayer().getPlayercount(); id++) {
 			int generatedId = id + 1;
 			Player player = new Player(generatedId);
 			players.add(player);
-			model.getPlayer()
-					.getVariables()
-					.forEach(v -> _doSimpleAssignment(variableManager, player, v));
+			model.getPlayer().getVariables().forEach(v -> _doSimpleAssignment(variableManager, player, v));
 		}
 		return players;
 	}
 
-	private List<Deck> _setupDecks(Model model, VariableManager variableManager)
-			throws IllegalAccessException {
+	private List<Deck> _setupDecks(Model model, VariableManager variableManager) throws IllegalAccessException {
 
 		if (model.getDecks() == null) {
 			return new ArrayList<>();
@@ -86,14 +77,10 @@ public class GameFactory {
 			Stack<Card> cardModels = new Stack<>();
 			for (com.github.gergelyszaz.bgl.bgl.Card cardModel : deckModel.getCards()) {
 				Card card = new Card(variableManager, cardModel.getName());
-				cardModel.getVariables().forEach(v->_doSimpleAssignment
-						(variableManager,card,v));
+				cardModel.getVariables().forEach(v -> _doSimpleAssignment(variableManager, card, v));
 				cardModels.add(card);
 			}
-			Deck deck = new Deck(variableManager,
-					cardModels,
-					null,
-					deckModel.getVisibility());
+			Deck deck = new Deck(variableManager, cardModels, null, deckModel.getVisibility());
 			decks.add(deck);
 			variableManager.store(null, deckModel.getName(), deck);
 			variableManager.store(deck, VariableManager.DECK.OWNER, null);
@@ -102,9 +89,7 @@ public class GameFactory {
 		return decks;
 	}
 
-	private List<Field> _setupFields(Model model,
-												VariableManager variableManager)
-			throws IllegalAccessException {
+	private List<Field> _setupFields(Model model, VariableManager variableManager) throws IllegalAccessException {
 
 		List<Field> fields = model.getFields();
 
@@ -112,16 +97,12 @@ public class GameFactory {
 
 		for (Field field : fields) {
 			variableManager.store(field, "tokenCount", 0);
-			field.getVariables()
-					.forEach(v -> _doSimpleAssignment(variableManager, field, v));
+			field.getVariables().forEach(v -> _doSimpleAssignment(variableManager, field, v));
 		}
 		return fields;
 	}
 
-	private void _setupPlayerDecks(Model model,
-											 VariableManager variableManager,
-											 List<Player> players,
-											 List<Deck> decks)
+	private void _setupPlayerDecks(Model model, VariableManager variableManager, List<Player> players, List<Deck> decks)
 			throws IllegalAccessException {
 
 		for (com.github.gergelyszaz.bgl.bgl.Deck deckModel : model.getPlayer().getDecks()) {
@@ -131,15 +112,11 @@ public class GameFactory {
 					cards.add(new Card(variableManager, cardModel.getName()));
 					for (SimpleAssignment variable : cardModel.getVariables()) {
 						String variableName = variable.getName();
-						Object reference =
-								variableManager.getReference(bglUtil.toString(variable.getAttribute()));
+						Object reference = variableManager.getReference(bglUtil.toString(variable.getAttribute()));
 						variableManager.store(cardModel, variableName, reference);
 					}
 				}
-				Deck deck = new Deck(variableManager,
-						cards,
-						player,
-						deckModel.getVisibility());
+				Deck deck = new Deck(variableManager, cards, player, deckModel.getVisibility());
 				decks.add(deck);
 				variableManager.store(player, deckModel.getName(), deck);
 				variableManager.store(deck, VariableManager.DECK.OWNER, player);
@@ -147,8 +124,7 @@ public class GameFactory {
 		}
 	}
 
-	private Object _resolveAttributeOrInt(VariableManager variableManager,
-													  AttributeOrInt attributeOrInt) {
+	private Object _resolveAttributeOrInt(VariableManager variableManager, AttributeOrInt attributeOrInt) {
 
 		if (attributeOrInt.getAttribute() == null) {
 			return attributeOrInt.getValue();
@@ -157,32 +133,21 @@ public class GameFactory {
 		}
 	}
 
-	private void _doSimpleAssignment(VariableManager variableManager,
-												Object parent,
-												SimpleAssignment assignment) {
+	private void _doSimpleAssignment(VariableManager variableManager, Object parent, SimpleAssignment assignment) {
 		String variableName = assignment.getName();
-		Object reference =
-				_resolveAttributeOrInt(variableManager, assignment.getAttribute());
+		Object reference = _resolveAttributeOrInt(variableManager, assignment.getAttribute());
 		variableManager.store(parent, variableName, reference);
 	}
 
-	private void _setupGlobalVariables(Model model,
-												  VariableManager variableManager)
-			throws IllegalAccessException {
+	private void _setupGlobalVariables(Model model, VariableManager variableManager) throws IllegalAccessException {
 
 		variableManager.store(null, VariableManager.GLOBAL.NULL, null);
-		model.getVariables()
-				.forEach(v -> _doSimpleAssignment(variableManager, null, v));
-		model.getFields()
-				.forEach(f -> variableManager.store(null, f.getName(), f));
+		model.getVariables().forEach(v -> _doSimpleAssignment(variableManager, null, v));
+		model.getFields().forEach(f -> variableManager.store(null, f.getName(), f));
 	}
 
-	private static void _setupPlayersStartRules(Model model,
-															  VariableManager variableManager,
-															  List<Player> players,
-															  ActionManager actionManager,
-															  InternalManager internalManager,
-															  IDManager idManager)
+	private void _setupPlayersStartRules(Model model, List<Player> players,
+			IDManager idManager, GameContext context)
 			throws IllegalAccessException {
 
 		for (PlayerSetup setup : model.getPlayer().getPlayerSetups()) {
@@ -191,40 +156,26 @@ public class GameFactory {
 				throw new IllegalAccessException("Invalid player id: " + setupId);
 			}
 			Player player = players.get(setupId - 1);
-			_setupPlayerStartRules(variableManager,
-					player,
-					setup,
-					idManager,
-					actionManager,
-					internalManager);
+			_setupPlayerStartRules(context, player, setup, idManager);
 
 		}
 	}
 
-	private static void _setupPlayerStartRules(VariableManager variableManager,
-															 Player player,
-															 PlayerSetup setup,
-															 IDManager idManager,
-															 ActionManager actionManager,
-															 InternalManager internalManager)
+	private void _setupPlayerStartRules(GameContext context, Player player, PlayerSetup setup, IDManager idManager)
 			throws IllegalAccessException {
 
-		variableManager.store(null, VariableManager.GLOBAL.CURRENTPLAYER, player);
-		variableManager.store(null, VariableManager.GLOBAL.THIS, player);
+		context.getVariableManager().store(null, VariableManager.GLOBAL.CURRENTPLAYER, player);
+		context.getVariableManager().store(null, VariableManager.GLOBAL.THIS, player);
 
 		ActionManager startActionManager = new ActionManager();
-		ActionFactory actionFactory = new ActionFactory(variableManager,
-				idManager,
-				actionManager,
-				internalManager);
-		startActionManager.setActions(actionFactory.createActionSequence(setup.getSetupRule()
-				.getActions()));
+		ActionFactory actionFactory = new ActionFactory();
+		startActionManager.setActions(actionFactory.createActionSequence(setup.getSetupRule().getActions()));
 
 		while (!startActionManager.step()) {
-			startActionManager.getCurrentAction().Execute();
+			startActionManager.getCurrentAction().execute(context);
 		}
 
-		variableManager.store(null, VariableManager.GLOBAL.THIS, null);
+		context.getVariableManager().store(null, VariableManager.GLOBAL.THIS, null);
 	}
 
 }

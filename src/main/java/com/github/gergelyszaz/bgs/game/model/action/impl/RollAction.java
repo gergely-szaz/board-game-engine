@@ -1,6 +1,7 @@
 package com.github.gergelyszaz.bgs.game.model.action.impl;
 
 import com.github.gergelyszaz.bgs.game.model.action.AbstractAction;
+import com.github.gergelyszaz.bgl.bgl.Action;
 import com.github.gergelyszaz.bgs.game.*;
 
 import java.util.*;
@@ -10,18 +11,18 @@ import java.util.*;
  */
 public class RollAction extends AbstractAction {
     private BGLUtil bglUtil = new BGLUtil();
-    public RollAction(VariableManager variableManager, com.github.gergelyszaz.bgl.bgl.Action action) {
-        super(variableManager,action);
+
+    public RollAction(Action action) {
+        super(action);
     }
 
     @Override
-    public void Execute() throws IllegalAccessException {
+    public void execute(GameContext context) throws IllegalAccessException {
         Random r = new Random();
 
-        List<Integer> results=new ArrayList<>();
+        List<Integer> results = new ArrayList<>();
         for (int i = 0; i < action.getNumberOfDice(); i++) {
-            int rollresult = r.nextInt(action.getTo()-action.getFrom()) + action
-                  .getFrom();
+            int rollresult = r.nextInt(action.getTo() - action.getFrom()) + action.getFrom();
             results.add(rollresult);
         }
 
@@ -31,6 +32,6 @@ public class RollAction extends AbstractAction {
         }
 
         String variablePath = bglUtil.toString(action.getToVar());
-        variableManager.store(variablePath, result);
+        context.getVariableManager().store(variablePath, result);
     }
 }

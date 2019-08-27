@@ -4,8 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import com.github.gergelyszaz.bgs.game.InternalManager;
-import com.github.gergelyszaz.bgs.game.VariableManager;
+import com.github.gergelyszaz.bgl.bgl.Action;
 import com.github.gergelyszaz.bgs.game.model.action.impl.AssignmentAction;
 import com.github.gergelyszaz.bgs.game.model.action.impl.ConditionalAction;
 import com.github.gergelyszaz.bgs.game.model.action.impl.DestroyAction;
@@ -21,7 +20,6 @@ import com.github.gergelyszaz.bgs.game.model.action.impl.ShuffleAction;
 import com.github.gergelyszaz.bgs.game.model.action.impl.SpawnAction;
 import com.github.gergelyszaz.bgs.game.model.action.impl.WhileAction;
 import com.github.gergelyszaz.bgs.game.model.action.impl.WinAction;
-import com.github.gergelyszaz.bgs.state.IDManager;
 
 /**
  * Created by gergely.szaz on 2016. 10. 16..
@@ -41,85 +39,70 @@ public class ActionFactory {
 	public static final String SPAWN = "SPAWN";
 	public static final String ASSIGNMENT = "ASSIGNMENT";
 
-	private final VariableManager variableManager;
-	private final ActionManager actionManager;
-	private final InternalManager internalManager;
+	public List<ConcreteAction> createActionSequence(List<Action> actions) throws IllegalAccessException {
 
-	public ActionFactory(VariableManager variableManager, IDManager idManager, ActionManager actionManager,
-			InternalManager internalManager) {
+		List<ConcreteAction> concreteActions = new ArrayList<>();
 
-		this.variableManager = variableManager;
-		this.actionManager = actionManager;
-		this.internalManager = internalManager;
-	}
-
-	public List<Action> createActionSequence(
-		 List<com.github.gergelyszaz.bgl.bgl.Action> actions)
-		 throws IllegalAccessException {
-
-		List<Action> returnActions = new ArrayList<>();
-
-		for (com.github.gergelyszaz.bgl.bgl.Action action : actions) {
-			returnActions.addAll(_createActionSequence(action));
+		for (Action action : actions) {
+			concreteActions.addAll(_createActionSequence(action));
 		}
 
 		if (actions.size() == 0) {
-			returnActions.add(new NopAction());
+			concreteActions.add(new NopAction());
 		}
 
-		return returnActions;
+		return concreteActions;
 	}
 
-	public Action createAction(com.github.gergelyszaz.bgl.bgl.Action action)
+	public ConcreteAction createAction(Action action)
 		 throws IllegalAccessException {
 
-		Action returnAction = null;
+		ConcreteAction returnAction = null;
 		String actionName=action.getName();
 		if(actionName==null)
 			actionName=ASSIGNMENT;
 		switch (actionName) {
 			case SELECT:
 				returnAction =
-					 new SelectAction(variableManager, action,
-						  internalManager.getSelectableManager());
+					 new SelectAction(action
+						  );
 				break;
 			case SPAWN:
 				returnAction =
-					 new SpawnAction(variableManager, action, internalManager);
+					 new SpawnAction(action);
 				break;
 			case MOVE:
-				returnAction = new MoveAction(variableManager, action);
+				returnAction = new MoveAction(action);
 				break;
 			case SHUFFLE:
-				returnAction = new ShuffleAction(variableManager, action);
+				returnAction = new ShuffleAction(action);
 				break;
 			case DESTROY:
 				returnAction =
-					 new DestroyAction(variableManager, action, internalManager);
+					 new DestroyAction(action);
 				break;
 			case WIN:
-				returnAction = new WinAction(variableManager, internalManager);
+				returnAction = new WinAction();
 				break;
 			case LOSE:
-				returnAction = new LoseAction(variableManager, internalManager);
+				returnAction = new LoseAction();
 				break;
 			case IF:
-				returnAction = new IfAction(variableManager, action,
-					 actionManager);
+				returnAction = new IfAction(action);
 				break;
 			case WHILE:
 				returnAction =
-					 new WhileAction(variableManager, action, actionManager);
+					 new WhileAction(action);
 				break;
 			case ENDTURN:
 				returnAction =
-					 new EndTurnAction(variableManager, actionManager, internalManager);
+					 new EndTurnAction();
 				break;
 			case ROLL:
-				returnAction = new RollAction(variableManager, action);
+				returnAction = new RollAction(action);
 				break;
 			case ASSIGNMENT:
-				returnAction = new AssignmentAction(variableManager, action);
+				returnAction = new AssignmentAction(action);
 				break;
 			default:
 				break;
@@ -128,22 +111,20 @@ public class ActionFactory {
 
 	}
 
-	private List<Action> _createActionSequence(com.github.gergelyszaz.bgl.bgl.Action action)
-		 throws IllegalAccessException {
+	private List<ConcreteAction> _createActionSequence(Action action) throws IllegalAccessException {
 
-		List<Action> returnActions = new ArrayList<>();
-		Action newAction = createAction(action);
+		List<ConcreteAction> returnActions = new ArrayList<>();
+		ConcreteAction newAction = createAction(action);
 		returnActions.add(newAction);
 
 		if (action.getNestedAction() != null) {
-			returnActions.addAll(
-				 createActionSequence(action.getNestedAction().getActions()));
+			returnActions.addAll(createActionSequence(action.getNestedAction().getActions()));
 
 			if (Objects.equals(action.getName(), WHILE)) {
-				returnActions.add(new GotoAction(newAction, actionManager));
+				returnActions.add(new GotoAction(newAction));
 			}
 
-			Action nopAction = new NopAction();
+			ConcreteAction nopAction = new NopAction();
 			returnActions.add(nopAction);
 			((ConditionalAction) newAction).setSkipAction(nopAction);
 

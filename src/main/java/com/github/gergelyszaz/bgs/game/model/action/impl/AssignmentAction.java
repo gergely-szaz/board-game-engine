@@ -11,20 +11,20 @@ import java.util.List;
  */
 public class AssignmentAction extends AbstractAction {
     private BGLUtil bglUtil = new BGLUtil();
-    private ArithmeticManager arithmeticManager;
 
-    public AssignmentAction(VariableManager variableManager, Action action) {
-        super(variableManager, action);
-        arithmeticManager = new ArithmeticManager(variableManager);
+    public AssignmentAction(Action action) {
+        super(action);
     }
 
     @Override
-    public void Execute() throws IllegalAccessException {
-        ValueAssignment assignment = action.getAssignment();
-        Object reference = getReference(assignment.getExpression());
+    public void execute(GameContext context) throws IllegalAccessException {
 
-        String variablePath = bglUtil.toString(
-                assignment.getName());
+        VariableManager variableManager = context.getVariableManager();
+
+        ValueAssignment assignment = action.getAssignment();
+        Object reference = getReference(assignment.getExpression(), variableManager);
+
+        String variablePath = bglUtil.toString(assignment.getName());
 
         variableManager.store(variablePath, reference);
     }
@@ -35,55 +35,56 @@ public class AssignmentAction extends AbstractAction {
         return super.toString();
     }
 
-    private Object getReference(ArithmeticExp arithmeticExp)
-    {
+    private Object getReference(ArithmeticExp arithmeticExp, VariableManager variableManager) {
         ArithmeticManager arithmeticManager = new ArithmeticManager(variableManager);
 
-        //just a simple reference
-        List<Expression> expressions =
-              arithmeticExp.getExpressions();
-        if (expressions.size() == 1 &&
-              expressions.get(0).getAttributeOrInt() != null) {
-            AttributeOrInt attributeOrInt =
-                  expressions.get(0).getAttributeOrInt();
+        // just a simple reference
+        List<Expression> expressions = arithmeticExp.getExpressions();
+        if (expressions.size() == 1 && expressions.get(0).getAttributeOrInt() != null) {
+            AttributeOrInt attributeOrInt = expressions.get(0).getAttributeOrInt();
             return arithmeticManager.resolveReference(attributeOrInt);
         }
 
-        //an expression
+        // an expression
         int i = 0;
-        int value = getReference(arithmeticExp.getExpressions().get(i));
-        for (String operator :
-              arithmeticExp.getOperators()) {
+        int value = getReference(arithmeticExp.getExpressions().get(i), variableManager);
+        for (String operator : arithmeticExp.getOperators()) {
             i++;
 
-            int expressionValue=getReference(expressions.get(i));
-            switch (operator){
-                case "+":
-                    value += expressionValue;
-                    break;
-                case "-":         value -= expressionValue; break;
-                case "%":         value %= expressionValue;break;
-                case "*":         value *= expressionValue;break;
-                case "/":         value /= expressionValue;break;
+            int expressionValue = getReference(expressions.get(i), variableManager);
+            switch (operator) {
+            case "+":
+                value += expressionValue;
+                break;
+            case "-":
+                value -= expressionValue;
+                break;
+            case "%":
+                value %= expressionValue;
+                break;
+            case "*":
+                value *= expressionValue;
+                break;
+            case "/":
+                value /= expressionValue;
+                break;
             }
         }
         return value;
     }
 
-    private int getReference(Expression expression)
-    {
+    private int getReference(Expression expression, VariableManager variableManager) {
         Object reference = null;
-        if(expression.getAttributeOrInt()!=null) {
-            reference= arithmeticManager.resolveReference(expression
-                  .getAttributeOrInt());
+        if (expression.getAttributeOrInt() != null) {
+            ArithmeticManager arithmeticManager = new ArithmeticManager(variableManager);
+            reference = arithmeticManager.resolveReference(expression.getAttributeOrInt());
         }
-        if(expression.getArithmeticExp()!=null) {
-            reference= getReference(expression
-                  .getArithmeticExp());
+        if (expression.getArithmeticExp() != null) {
+            reference = getReference(expression.getArithmeticExp(), variableManager);
         }
 
-        if(!(reference instanceof Integer)){
-            throw new IllegalAccessError("Could not get value of"+reference);
+        if (!(reference instanceof Integer)) {
+            throw new IllegalAccessError("Could not get value of" + reference);
         }
         return (Integer) reference;
     }

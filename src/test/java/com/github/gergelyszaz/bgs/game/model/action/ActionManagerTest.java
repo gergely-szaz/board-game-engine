@@ -10,15 +10,12 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 
-/**
- * Created by gergely.szaz on 2016. 10. 16..
- */
 public class ActionManagerTest {
 
 	ActionManager actionManager;
-	List<Action> actions;
-	Action firstAction;
-	Action secondAction;
+	List<ConcreteAction> actions;
+	ConcreteAction firstAction;
+	ConcreteAction secondAction;
 
 	@Test(expected = IllegalAccessError.class)
 	public void emptyList() throws Exception {
@@ -52,8 +49,8 @@ public class ActionManagerTest {
 	@Before
 	public void setUp() throws Exception {
 
-		firstAction = mock(Action.class);
-		secondAction = mock(Action.class);
+		firstAction = mock(ConcreteAction.class);
+		secondAction = mock(ConcreteAction.class);
 
 		actions = new ArrayList<>(Arrays.asList(
 			 firstAction, secondAction

@@ -7,11 +7,11 @@ import java.util.List;
  */
 public class ActionManager {
 
-	private List<Action> actions;
-	private Action currentAction;
-	private Action nextAction;
+	private List<ConcreteAction> actions;
+	private ConcreteAction currentAction;
+	private ConcreteAction nextAction;
 
-	public void setActions(List<Action> actions){
+	public void setActions(List<ConcreteAction> actions){
 		this.actions=actions;
 	}
 
@@ -52,11 +52,11 @@ public class ActionManager {
 		return nextIndex==0;
 	}
 
-	public Action getCurrentAction(){
+	public ConcreteAction getCurrentAction(){
 		return  currentAction;
 	}
 
-	public void setNextAction(Action action){
+	public void setNextAction(ConcreteAction action){
 		this.nextAction=action;
 	}
 

@@ -10,8 +10,6 @@ import java.util.List;
 import com.github.gergelyszaz.bgl.bgl.AttributeName;
 import com.github.gergelyszaz.bgl.bgl.NestedAction;
 import com.github.gergelyszaz.bgl.bgl.Token;
-import com.github.gergelyszaz.bgs.game.InternalManager;
-import com.github.gergelyszaz.bgs.game.VariableManager;
 import com.github.gergelyszaz.bgs.game.model.action.impl.AssignmentAction;
 import com.github.gergelyszaz.bgs.game.model.action.impl.DestroyAction;
 import com.github.gergelyszaz.bgs.game.model.action.impl.EndTurnAction;
@@ -26,7 +24,6 @@ import com.github.gergelyszaz.bgs.game.model.action.impl.ShuffleAction;
 import com.github.gergelyszaz.bgs.game.model.action.impl.SpawnAction;
 import com.github.gergelyszaz.bgs.game.model.action.impl.WhileAction;
 import com.github.gergelyszaz.bgs.game.model.action.impl.WinAction;
-import com.github.gergelyszaz.bgs.state.IDManager;
 
 import org.eclipse.emf.common.util.BasicEList;
 import org.junit.Before;
@@ -46,9 +43,7 @@ public class ActionFactoryTest {
 	@Before
 	public void setUp() throws Exception {
 
-		actionFactory = new ActionFactory(mock(VariableManager.class), mock(
-			 IDManager.class), mock(ActionManager.class),
-			 mock(InternalManager.class));
+		actionFactory = new ActionFactory();
 
 
 
@@ -128,7 +123,7 @@ public class ActionFactoryTest {
 
 	@Test
 	public void createWhileActionSequence() throws Exception {
-		List<Action> actions=actionFactory.createActionSequence(Arrays.asList
+		List<ConcreteAction> actions=actionFactory.createActionSequence(Arrays.asList
 			 (whileAction));
 		assertTrue(actions.size()==4);
 		assertTrue(actions.get(0) instanceof WhileAction);
@@ -139,7 +134,7 @@ public class ActionFactoryTest {
 
 	@Test
 	public void createIfActionSequence() throws Exception {
-		List<Action> actions=actionFactory.createActionSequence(Arrays.asList
+		List<ConcreteAction> actions=actionFactory.createActionSequence(Arrays.asList
 			 (ifAction));
 		assertTrue(actions.size()==3);
 		assertTrue(actions.get(0) instanceof IfAction);
@@ -149,7 +144,7 @@ public class ActionFactoryTest {
 
 	@Test
 	public void createEmptySequnce() throws Exception {
-		List<Action> actions=actionFactory.createActionSequence(Arrays.asList
+		List<ConcreteAction> actions=actionFactory.createActionSequence(Arrays.asList
 			 ());
 		assertTrue(actions.size()==1);
 		assertTrue(actions.get(0) instanceof NopAction);

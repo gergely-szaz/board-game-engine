@@ -1,14 +1,12 @@
 package com.github.gergelyszaz.bgs.game.model.action.impl;
 
-import com.github.gergelyszaz.bgs.game.model.action.Action;
+import com.github.gergelyszaz.bgs.game.GameContext;
+import com.github.gergelyszaz.bgs.game.model.action.ConcreteAction;
 
-/**
- * Created by mad on 2016. 10. 24..
- */
-public class NopAction implements Action {
+public class NopAction implements ConcreteAction {
 
 	@Override
-	public void Execute() throws IllegalAccessException {
+	public void execute(GameContext context) throws IllegalAccessException {
 		//Intentionally left empty
 	}
 
