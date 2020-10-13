@@ -27,7 +27,7 @@
     </scm>
     <properties>
         <mockitoVersion>2.1.0</mockitoVersion>
-        <junitVersion>4.10</junitVersion>
+        <junitVersion>4.13.1</junitVersion>
         <javaVersion>1.8</javaVersion>
         <encoding>UTF-8</encoding>
     </properties>
